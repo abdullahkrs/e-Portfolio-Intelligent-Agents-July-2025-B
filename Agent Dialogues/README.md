@@ -392,21 +392,3 @@ PRs welcome! Please keep the demo minimal and well-commented. Feel free to add t
 ## License
 MIT — see `LICENSE`.
 
----
-
-## Push to GitHub
-
-**Using Git:**
-```bash
-git init
-git add .
-git commit -m "Initial commit: KQML/KIF Alice↔Bob demo"
-git branch -M main
-git remote add origin https://github.com/<YOUR_USERNAME>/<YOUR_REPO>.git
-git push -u origin main
-```
-
-**Using GitHub CLI:**
-```bash
-gh repo create <YOUR_REPO> --public --source . --remote origin --push
-```
