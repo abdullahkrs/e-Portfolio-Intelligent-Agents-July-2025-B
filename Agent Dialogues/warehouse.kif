@@ -1,0 +1,25 @@
+
+;; warehouse.kif — Tiny KIF/SUO-KIF-style ontology & sample facts for the demo
+
+;; ---------- Ontology ----------
+(define-class TelevisionModel)
+(define-fun size-inch (TelevisionModel Integer))
+(define-fun model-sku  (TelevisionModel Symbol))
+(define-fun available-quantity (Symbol Integer))
+(define-fun hdmi-slots (Symbol Integer))
+
+;; ---------- Sample facts (match bob_server.py KB) ----------
+
+;; Model 1
+(instance TVM-50-ULTRA TelevisionModel)
+(size-inch TVM-50-ULTRA 50)
+(model-sku TVM-50-ULTRA SKU-50TV-ABC)
+(available-quantity SKU-50TV-ABC 42)
+(hdmi-slots SKU-50TV-ABC 3)
+
+;; Model 2
+(instance TVM-50-VISTA TelevisionModel)
+(size-inch TVM-50-VISTA 50)
+(model-sku TVM-50-VISTA SKU-50TV-XYZ)
+(available-quantity SKU-50TV-XYZ 17)
+(hdmi-slots SKU-50TV-XYZ 2)
