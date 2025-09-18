@@ -128,4 +128,3 @@ The/DT man/NN saw/VBD the/DT dog/NN with/IN the/DT telescope/NN ./.
 
 ---
 
-*End of file.*
