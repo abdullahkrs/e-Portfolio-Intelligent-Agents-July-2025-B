@@ -163,6 +163,57 @@ https://yourdomain.up.railway.app
 | **Static Assets** | Contain CSS and JS to manage layout, theme, and responsiveness |
 
 ---
+## 🧪 Testing Overview
+
+**Where tests live**
+- **Backend:** `aro_agent_backend/aro_agent/tests/`
+- **Frontend:** `aro_agent_frontend/webapp/tests/`
+
+**Prereqs**
+```bash
+pip install pytest pytest-cov
+```
+
+**Run all tests**
+```bash
+# Backend
+cd aro_agent/aro_agent_backend
+pytest -q aro_agent/tests --cov=aro_agent --cov-report=term-missing
+
+# Frontend
+cd ../aro_agent_frontend
+pytest -q webapp/tests --cov=webapp --cov-report=term-missing
+```
+
+**Generate HTML coverage (optional)**
+```bash
+# Backend
+pytest aro_agent/tests --cov=aro_agent --cov-report=html
+# Frontend
+pytest webapp/tests --cov=webapp --cov-report=html
+# Open: htmlcov/index.html
+```
+
+**Key test files & what they verify**
+
+**Backend**
+- `test_primary_id.py` — DOI normalization and arXiv fallback for primary IDs.  
+- `test_year_filter.py` — Inclusive year bounds for result filtering.  
+- `test_api_schedule_toggle.py` — `/runs/<id>/schedule/enable|disable` create/remove schedule flag.  
+- `test_zip_endpoint.py` — `/zip` returns a valid ZIP stream and handles bad payloads.  
+- `test_send_email_mock.py` — `/send` validates recipients and returns a mocked Gmail message ID.
+
+**Frontend**
+- `test_homepage_render.py` — Homepage lists recent runs returned by the API.  
+- `test_run_detail_render.py` — Run detail renders preview rows and artifact links.  
+- `test_jobs_page_render.py` — Jobs page shows schedule status (enabled/disabled, next run).
+
+**Tips for reliable runs**
+- Use isolated temp dirs in tests (already handled via `tmp_path` fixtures and `ARO_OUT_ROOT`).  
+- External calls are monkey-patched in frontend tests and the email sender is mocked in backend tests.  
+- If you’ve customized endpoints or template names, update the test URLs/strings to match.
+
+---
 
 ## ✅ Evidence of Execution
 
