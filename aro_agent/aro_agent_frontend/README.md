@@ -24,28 +24,34 @@ Developed using **Python Flask**, **Jinja2 templates**, **HTML**, **CSS**, and *
 ```
 aro_agent_frontend/
 │
-├── .env                        # Environment configuration (optional)
-├── .gitignore                  # Files ignored by Git
-├── railway.json                # Railway deployment configuration
-├── requirements.txt             # Flask and web dependencies
+├── .env                          # Environment configuration (optional)
+├── .gitignore                    # Files ignored by Git
+├── railway.json                  # Railway deployment configuration
+├── requirements.txt              # Flask and web dependencies (Flask, requests, pytest)
 │
-├── webapp/                     # Main application directory
-│   ├── app.py                  # Application entry point (Flask web server)
-│   ├── __init__.py             # Flask app factory and initialization
+├── webapp/                       # Main Flask application package
+│   ├── app.py                    # Application entry point (Flask routes, logic)
+│   ├── __init__.py               # Flask app factory initialization
 │   │
-│   ├── static/                 # Static resources (CSS, JS, icons)
-│   │   └── style.css           # Main stylesheet
+│   ├── static/                   # Frontend static resources (CSS, JS, images)
+│   │   └── style.css             # Main CSS file for layout and themes
 │   │
-│   ├── templates/              # HTML templates (Jinja2)
-│   │   ├── layout.html         # Shared layout (header, footer, theme)
-│   │   ├── index.html          # Homepage — search interface
-│   │   ├── results.html        # Results table view
-│   │   ├── schedule.html       # Display all scheduled jobs (Not Used)
-│   │   └── schedule_missing.html # Fallback when no schedule data is found (Not Used)
+│   ├── templates/                # Jinja2 templates for rendering pages
+│   │   ├── layout.html           # Shared layout (navbar, footer, theme toggle)
+│   │   ├── index.html            # Homepage — Search interface + recent runs
+│   │   ├── results.html          # Results page — displays preview table
+│   │   ├── schedule.html         # Page for scheduled jobs  (Not Used)
+│   │   └── schedule_missing.html # Placeholder when schedule data unavailable  (Not Used)
 │   │
-│   └── __pycache__/            # Compiled Python cache files
+│   ├── tests/                    # ✅ Frontend test suite
+│   │   ├── test_homepage_render.py      # Tests homepage run list rendering
+│   │   ├── test_run_detail_render.py    # Tests run detail and preview table
+│   │   ├── test_jobs_page_render.py     # Tests jobs schedule page
+│   │   └── __init__.py                  # Marks directory as a test package
+│   │
+│   └── __pycache__/              # Compiled Python cache files (auto-generated)
 │
-└── wsgi.py                     # WSGI entrypoint for cloud deployment
+└── wsgi.py                       # WSGI entrypoint for Railway/cloud deployment
 ```
 
 ---
