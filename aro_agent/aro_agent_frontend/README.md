@@ -40,8 +40,8 @@ aro_agent_frontend/
 │   │   ├── layout.html         # Shared layout (header, footer, theme)
 │   │   ├── index.html          # Homepage — search interface
 │   │   ├── results.html        # Results table view
-│   │   ├── schedule.html       # Display all scheduled jobs
-│   │   └── schedule_missing.html # Fallback when no schedule data is found
+│   │   ├── schedule.html       # Display all scheduled jobs (Not Used)
+│   │   └── schedule_missing.html # Fallback when no schedule data is found (Not Used)
 │   │
 │   └── __pycache__/            # Compiled Python cache files
 │
@@ -98,7 +98,7 @@ http://127.0.0.1:5000/
 If your backend is deployed on **Railway**, update your environment variable or configuration file (e.g., `.env` or inside `app.py`) to:
 
 ```
-https://aroagentbackend-production.up.railway.app
+https://yourdomain.up.railway.app
 ```
 
 ---
@@ -122,12 +122,12 @@ python webapp/app.py
 ### 4. Link to Backend
 Ensure the `app.py` in `webapp` points to your backend API URL:
 ```python
-BACKEND_URL = "https://aroagentbackend-production.up.railway.app"
+BACKEND_URL = "https://yourdomain.up.railway.app"
 ```
 
 After deployment, your frontend will be publicly accessible at a Railway URL such as:
 ```
-https://aroagentfrontend-production.up.railway.app
+https://yourdomain.up.railway.app
 ```
 
 ---
