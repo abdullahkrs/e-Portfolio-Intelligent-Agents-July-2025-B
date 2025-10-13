@@ -165,7 +165,7 @@ http://127.0.0.1:8000/
 #### 5. Connect to backend
 Ensure the backend is already running locally or update configuration to your deployed Railway API endpoint, for example:
 ```
-https://aroagentbackend-production.up.railway.app
+https://yourdomain.up.railway.app
 ```
 
 ---
