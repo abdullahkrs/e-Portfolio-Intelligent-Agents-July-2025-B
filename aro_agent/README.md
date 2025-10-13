@@ -23,7 +23,7 @@ The system automates academic research retrieval, scheduling, and report generat
 The project is organized into two main components — the **Backend API** and the **Frontend Web Interface** — each functioning independently but integrated through RESTful communication.
 
 ```
-aro_agent2/
+aro_agent/
 │
 ├── aro_agent_backend/                 # Backend API (Flask)
 │   ├── .env                          # Environment configuration (API keys, database paths)
@@ -56,12 +56,12 @@ aro_agent2/
 │   │   │   ├── index.html            # Homepage (search interface)
 │   │   │   ├── layout.html           # Shared base layout (header, theme toggle)
 │   │   │   ├── results.html          # Displays research results in table format
-│   │   │   ├── schedule.html         # Lists and manages scheduled jobs
-│   │   │   └── schedule_missing.html # Fallback template when schedule not found
+│   │   │   ├── schedule.html         # Lists and manages scheduled jobs (Not Used)
+│   │   │   └── schedule_missing.html # Fallback template when schedule not found  (Not Used)
 │   └── wsgi.py                       # WSGI entrypoint for cloud deployment
 │
 └── (Root Directory)
-    └── aro_agent2.zip (current archive)
+    └── aro_agent
 ```
 
 ### 🧠 Summary of Responsibilities
@@ -74,112 +74,138 @@ aro_agent2/
 
 ---
 
-## ⚙️ Installation (Local Environment)
+## ⚙️ Installation Guide
 
-### 1. Clone or extract the project
+### 🧩 Backend Setup — `aro_agent_backend`
+
+#### 1. Navigate to backend directory
 ```bash
-git clone https://github.com/yourusername/aro_agent.git
-cd aro_agent2
+cd aro_agent_backend
 ```
 
-Or extract the provided `aro_agent2.zip`.
-
-### 2. Create and activate a virtual environment
+#### 2. Create a virtual environment
 ```bash
 python -m venv venv
-source venv/bin/activate     # macOS / Linux
-venv\Scripts\activate      # Windows
 ```
 
-### 3. Install dependencies
+Activate it:
 ```bash
-pip install -r aro_agent_frontend/requirements.txt
+# Windows
+venv\Scripts\activate
+
+# macOS / Linux
+source venv/bin/activate
 ```
 
-### 4. Run the backend API
+#### 3. Install dependencies
+If your backend includes `requirements.txt`:
 ```bash
-cd aro_agent_backend/aro_agent
+pip install -r requirements.txt
+```
+If not, install manually:
+```bash
+pip install flask requests sqlite-utils
+```
+
+#### 4. Run the backend server
+```bash
+cd aro_agent
 python api.py
 ```
 
-The backend runs by default on `http://127.0.0.1:5000/`.
+Backend runs by default on:
+```
+http://127.0.0.1:5000/
+```
 
-### 5. Run the frontend
+#### 5. Test API locally
 ```bash
-cd ../../aro_agent_frontend/webapp
+curl -X POST http://127.0.0.1:5000/runs   -H "Content-Type: application/json"   -d '{"query": "machine learning fraud", "from_year": 2019, "to_year": 2025}'
+```
+
+---
+
+### 🌐 Frontend Setup — `aro_agent_frontend`
+
+#### 1. Navigate to frontend directory
+```bash
+cd aro_agent_frontend
+```
+
+#### 2. Create and activate virtual environment
+```bash
+python -m venv venv
+```
+
+Activate it:
+```bash
+# Windows
+venv\Scripts\activate
+
+# macOS / Linux
+source venv/bin/activate
+```
+
+#### 3. Install dependencies
+```bash
+pip install -r requirements.txt
+```
+
+#### 4. Run the frontend app
+```bash
+cd webapp
 python app.py
 ```
 
-Then open your browser and go to `http://127.0.0.1:8000/`.
+Frontend runs by default on:
+```
+http://127.0.0.1:8000/
+```
+
+#### 5. Connect to backend
+Ensure the backend is already running locally or update configuration to your deployed Railway API endpoint, for example:
+```
+https://aroagentbackend-production.up.railway.app
+```
 
 ---
 
 ## ☁️ Deployment on Railway (Cloud)
 
-### 1. Upload the project
-You can deploy both backend and frontend as **separate services** on [Railway.app](https://railway.app/).
+You can deploy both components separately on [Railway.app](https://railway.app/).
 
-Each service should include:
-- `Procfile`
+Each service must include:
 - `requirements.txt`
-- Startup command (Flask app entry point)
-
-Example Railway configuration:
-
-**Backend Service:**
-```
-python aro_agent/api.py
-```
-
-**Frontend Service:**
-```
-python webapp/app.py
-```
-
-### 2. Environment Variables
-Make sure to set environment variables in Railway for production mode:
+- Startup command (`python app.py` or `python webapp/app.py`)
+- Environment variables, e.g.:
 ```
 FLASK_ENV=production
 PORT=5000
 ```
 
-### 3. Verify Deployment
-After deployment, test:
+### Example Startup Commands
+**Backend:**
+```
+python aro_agent/api.py
+```
+
+**Frontend:**
+```
+python webapp/app.py
+```
+
+### Test Deployment
 ```bash
-curl -X POST https://aroagentbackend-production.up.railway.app/runs   -H "Content-Type: application/json"   -d '{"query":"machine learning fraud","per_source_limit":10,"from_year":2019,"to_year":2025}'
+curl -X POST https://yourdomain.up.railway.app/runs   -H "Content-Type: application/json"   -d '{"query":"machine learning fraud","per_source_limit":10,"from_year":2019,"to_year":2025}'
 ```
 
 ---
 
 ## 🧪 Testing and Results
 
-### Local Test
-Run:
-```bash
-curl -X POST http://127.0.0.1:5000/runs   -H "Content-Type: application/json"   -d '{"query":"artificial intelligence", "from_year":2019, "to_year":2025}'
-```
-
-Expected output:
-```json
-{
-  "query": "artificial intelligence",
-  "results": [...],
-  "format": "json"
-}
-```
-
-### Evidence of Execution
 - Successful API runs produce results in `/out/run_YYYYMMDD_HHMMSS/`
-- Generated files include `.csv`, `.json`, `.sqlite`, `.bib`, and a static `index.html`
-- Frontend dynamically displays the results table and scheduled runs.
-
----
-
-## 📊 Documentation & Logs
-
-- Each execution is logged in the backend console with timestamps and job IDs.
-- README serves as both **user** and **technical documentation**.
-- Additional details are provided in `Design_Proposal_Document.pdf` and `Presentation_Transcript.pdf`.
+- Generated files include `.csv`, `.json`, `.sqlite`, `.bib`, and static HTML reports
+- Frontend dynamically displays results and schedules
 
 ---
 
