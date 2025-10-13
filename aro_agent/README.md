@@ -41,6 +41,13 @@ aro_agent/
 │   │   ├── config.py                 # Configuration (paths, limits, and global settings)
 │   │   ├── models.py                 # Defines internal data models and schemas
 │   │   └── templates/assets/         # Static assets and templates for email/report generation
+│       └── tests/                          # ✅ Backend test suite
+│           ├── __init__.py
+│           ├── test_primary_id.py          # DOI/arXiv primary-id extraction
+│           ├── test_year_filter.py         # Year range inclusive bounds
+│           ├── test_api_schedule_toggle.py # Enable/disable scheduling endpoints
+│           ├── test_zip_endpoint.py        # ZIP packaging stream & validation
+│           └── test_send_email_mock.py     # /send with mocked mailer
 │
 ├── aro_agent_frontend/               # Web user interface (Flask + Jinja)
 │   ├── .env                          # Frontend environment configuration
@@ -58,6 +65,11 @@ aro_agent/
 │   │   │   ├── results.html          # Displays research results in table format
 │   │   │   ├── schedule.html         # Lists and manages scheduled jobs (Not Used)
 │   │   │   └── schedule_missing.html # Fallback template when schedule not found  (Not Used)
+│       └── tests/                          # ✅ Frontend test suite
+│           ├── __init__.py
+│           ├── test_homepage_render.py     # Lists runs on homepage
+│           ├── test_run_detail_render.py   # Run detail preview + artifacts
+│           └── test_jobs_page_render.py    # Jobs/schedule page render
 │   └── wsgi.py                       # WSGI entrypoint for cloud deployment
 │
 └── (Root Directory)
