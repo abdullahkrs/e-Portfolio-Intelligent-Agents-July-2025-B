@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ARO Agent — Home</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+  <div class="topbar">
+    <div class="brand">ARO Agent</div>
+    <div class="row">
+      <div class="theme-toggle">
+        <button data-mode="auto" class="active">Auto</button>
+        <button data-mode="light">Light</button>
+        <button data-mode="dark">Dark</button>
+      </div>
+    </div>
+  </div>
+
+  <main class="container">
+    <!-- NEW SEARCH (top) -->
+    <section class="card">
+      <form method="post" action="{{ url_for('index') }}">
+        <div class="row grid">
+          <div>
+            <label for="query">New search</label>
+            <input id="query" name="query" type="text" required placeholder="e.g., machine learning">
+          </div>
+          <div>
+            <label for="limit">Max per source</label>
+            <input id="limit" name="limit" type="number" min="1" value="50">
+          </div>
+          <div>
+            <label for="from_year">From year</label>
+            <input id="from_year" name="from_year" type="number" min="1900" placeholder="e.g., 2015">
+          </div>
+          <div>
+            <label for="to_year">To year</label>
+            <input id="to_year" name="to_year" type="number" min="1900" placeholder="e.g., 2025">
+          </div>
+        </div>
+        <div class="row">
+          <button class="btn" type="submit">Run</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- RECENT RUNS -->
+    <section class="card">
+      <div class="row" style="justify-content:space-between">
+        <div>
+          <strong>Recent runs</strong>
+          <div class="muted">Latest searches with quick actions</div>
+        </div>
+      </div>
+
+      {% if runs %}
+      <div class="table-wrap">
+        <table class="table" role="grid" aria-label="Runs">
+          <thead>
+            <tr>
+              <th style="width:34%">Query</th>
+              <th style="width:16%">Date</th>
+              <th style="width:16%">Results</th>
+              <th style="width:16%">Schedule</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for r in runs %}
+            {# ---- robust extraction for object or dict ---- #}
+            {% set runid =
+            (r.id if r is not mapping else r.get('id'))
+            or (r.run_id if r is not mapping else r.get('run_id')) %}
+            {% set date_val =
+            (r.created_at if r is not mapping else r.get('created_at'))
+            or (r.started_at if r is not mapping else r.get('started_at'))
+            or (r.date if r is not mapping else r.get('date')) %}
+            {% set results_count =
+            (r.count if r is not mapping else r.get('count'))
+            or (r.results_count if r is not mapping else r.get('results_count'))
+            or (r.total if r is not mapping else r.get('total'))
+            or ( (r['items']|length) if r is mapping and ('items' in r) and (r['items'] is sequence) else None )
+            or ( (r['results']|length) if r is mapping and ('results' in r) and (r['results'] is sequence) else None )
+            or ( (r['records']|length) if r is mapping and ('records' in r) and (r['records'] is sequence) else None )
+            %}
+            {% set is_on =
+            (r.scheduled if r is not mapping else r.get('scheduled'))
+            or ( (r.schedule.enabled) if (r is not mapping and r.schedule is defined) else (((r.get('schedule') or
+            {}).get('enabled')) if r is mapping else False) ) %}
+            <tr>
+              <td><strong>{{ r.query if r is not mapping else r.get('query') }}</strong>
+                <div class="muted">Run ID: {{ runid }}</div>
+              </td>
+              <td>{{ date_val or '—' }}</td>
+              <td>{{ results_count if results_count is not none else '—' }}</td>
+              <td>
+                <!-- Single ON/OFF button -->
+                <form method="post"
+                  action="{% if is_on %}{{ url_for('run_schedule_disable', run_id=runid) }}{% else %}{{ url_for('run_schedule_enable', run_id=runid) }}{% endif %}">
+                  {% if is_on %}
+                  <span class="badge ok" title="This run is scheduled and updates automatically.">Enabled</span>
+                  {% else %}
+                  <span class="badge warn" title="This run is not scheduled.">Disabled</span>
+                  {% endif %}
+                </form>
+              </td>
+              <td class="row">
+                <a class="btn btn-secondary" href="{{ url_for('run_detail', run_id=runid) }}">Open</a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <p class="muted">No runs yet. Start a new search above.</p>
+      {% endif %}
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      const html = document.documentElement;
+      const get = () => localStorage.getItem("aro-theme") || "auto";
+      const set = v => { localStorage.setItem("aro-theme", v); html.setAttribute("data-theme", v); mark(v); };
+      const mark = v => document.querySelectorAll(".theme-toggle button").forEach(b => b.classList.toggle("active", b.dataset.mode === v));
+      document.querySelectorAll(".theme-toggle button").forEach(b => b.onclick = () => set(b.dataset.mode));
+      set(get());
+    })();
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,20 @@
+*{box-sizing:border-box}body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial,sans-serif;margin:0;background:#fafafa;color:#222}
+header{position:sticky;top:0;background:#fff;border-bottom:1px solid #eee;padding:12px 16px}
+h1{margin:0 0 8px 0;font-size:20px}
+#filter{width:100%;padding:10px;border:1px solid #ddd;border-radius:8px}
+th,td{padding:10px;border-bottom:1px solid #eee;vertical-align:top}
+th{text-align:left;background:#f5f5f5}
+a{color:#0b5bd3;text-decoration:none}
+a:hover{text-decoration:underline}
+body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 0; }
+.topbar { background:#111; color:#fff; padding:12px 16px; display:flex; align-items:center; gap:16px; }
+.topbar h1 { font-size:18px; margin:0; }
+.topbar .query code { background:#222; padding:2px 6px; border-radius:4px; }
+.controls { display:flex; justify-content:space-between; align-items:center; gap:16px; padding:12px 16px; border-bottom:1px solid #eee; flex-wrap:wrap; }
+.controls .filters label { margin-right:12px; }
+.controls .downloads a { margin-left:8px; }
+.hidden { display:none; }
+table { width:100%; border-collapse:collapse; }
+thead th { position:sticky; top:0; background:#fafafa; border-bottom:1px solid #ddd; padding:8px; text-align:left; }
+tbody td { border-bottom:1px solid #f1f1f1; padding:8px; vertical-align:top; }
+tbody tr:hover { background:#fffbf0; }

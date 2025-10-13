@@ -1,0 +1,4 @@
+Flask>=2.3
+uvicorn[standard]>=0.30
+asgiref>=3.8
+requests>=2.32

@@ -1,0 +1,233 @@
+/* =========================================
+   ARO Agent Unified Styles (Light/Dark/Auto)
+   ========================================= */
+
+:root {
+  /* --- Light mode default --- */
+  --bg: #f6f7fb;
+  --card: #ffffff;
+  --text: #1f2430;
+  --muted: #6b7280;
+  --accent: #0b5bd3;
+  --accent-hover: #0a4fb9;
+  --line: #ececec;
+  --thead: #fafafa;
+  --shadow: 0 1px 2px rgba(0,0,0,.04);
+  --radius: 12px;
+}
+
+/* --- Dark mode variables --- */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0b1220;
+    --card: #121b2e;
+    --text: #e7eefc;
+    --muted: #93a2bb;
+    --accent: #4ea1ff;
+    --accent-hover: #6a8bff;
+    --line: #22314d;
+    --thead: #14203a;
+    --shadow: 0 6px 18px rgba(0,0,0,.3);
+  }
+}
+
+/* Manual override for user toggle */
+[data-theme="dark"] {
+  --bg: #0b1220;
+  --card: #121b2e;
+  --text: #e7eefc;
+  --muted: #93a2bb;
+  --accent: #4ea1ff;
+  --accent-hover: #6a8bff;
+  --line: #22314d;
+  --thead: #14203a;
+  --shadow: 0 6px 18px rgba(0,0,0,.3);
+}
+[data-theme="light"] {
+  --bg: #f6f7fb;
+  --card: #ffffff;
+  --text: #1f2430;
+  --muted: #6b7280;
+  --accent: #0b5bd3;
+  --accent-hover: #0a4fb9;
+  --line: #ececec;
+  --thead: #fafafa;
+  --shadow: 0 1px 2px rgba(0,0,0,.04);
+}
+
+/* --- Base --- */
+* { box-sizing: border-box; } /* Applies border-box sizing to all elements */
+body {
+  margin: 0; /* Resets default body margin */
+  background: var(--bg); /* Sets background color using the --bg variable */
+  color: var(--text); /* Sets text color using the --text variable */
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, "Helvetica Neue", Arial, sans-serif; /* Sets a system-based font stack */
+}
+a {
+  color: var(--accent); /* Sets link color using the --accent variable */
+  text-decoration: none; /* Removes default link underline */
+}
+a:hover { text-decoration: underline; } /* Adds underline on link hover */
+
+.container {
+  max-width: 1000px; /* Sets maximum container width */
+  margin: 24px auto; /* Centers container with auto margins */
+  padding: 0 16px; /* Adds horizontal padding */
+}
+
+.topbar {
+  position: sticky; /* Sticks the topbar to the top of the viewport */
+  top: 0;
+  background: var(--card); /* Sets background color using the --card variable */
+  border-bottom: 1px solid var(--line); /* Adds a bottom border using the --line variable */
+  padding: 10px 16px; /* Adds vertical and horizontal padding */
+  z-index: 10; /* Sets a stacking context */
+  display: flex; /* Uses flexbox for layout */
+  justify-content: space-between; /* Distributes space evenly between items */
+  align-items: center; /* Vertically aligns items */
+}
+
+.brand {
+  font-weight: 700; /* Sets font weight to bold */
+}
+
+.card {
+  background: var(--card); /* Sets background color using the --card variable */
+  border: 1px solid var(--line); /* Adds a border using the --line variable */
+  border-radius: var(--radius); /* Sets border radius using the --radius variable */
+  padding: 16px; /* Adds padding */
+  box-shadow: var(--shadow); /* Adds a box shadow using the --shadow variable */
+  margin-bottom: 16px; /* Adds bottom margin */
+}
+
+.row {
+  margin-bottom: 12px; /* Adds bottom margin */
+  display: flex; /* Uses flexbox for layout */
+  gap: 12px; /* Sets gap between items */
+  flex-wrap: wrap; /* Allows items to wrap to the next line */
+}
+.row.grid > div {
+  flex: 1 1 180px; /* Sets flex properties for grid items */
+}
+
+/* Inputs */
+label {
+  display: block; /* Makes label a block-level element */
+  font-size: 14px; /* Sets font size */
+  margin-bottom: 6px; /* Adds bottom margin */
+  color: var(--text); /* Sets text color using the --text variable */
+}
+input[type=text],
+input[type=email],
+input[type=number],
+input[type=search] {
+  width: 100%; /* Makes input take up full width */
+  padding: 10px; /* Adds padding */
+  border: 1px solid var(--line); /* Adds a border using the --line variable */
+  border-radius: 8px; /* Sets border radius */
+  background: var(--card); /* Sets background color using the --card variable */
+  color: var(--text); /* Sets text color using the --text variable */
+}
+input:focus-visible {
+  outline: 2px solid var(--accent); /* Adds an outline on focus using the --accent variable */
+}
+
+/* Buttons */
+button, .btn {
+  background: var(--accent); /* Sets background color using the --accent variable */
+  color: #fff; /* Sets text color to white */
+  border: none; /* Removes border */
+  border-radius: 10px; /* Sets border radius */
+  padding: 10px 14px; /* Adds vertical and horizontal padding */
+  cursor: pointer; /* Changes cursor to pointer on hover */
+  display: inline-block; /* Makes button an inline-block element */
+  transition: background .2s; /* Adds a transition effect for background changes */
+}
+button:hover, .btn:hover {
+  background: var(--accent-hover); /* Sets background color on hover using the --accent-hover variable */
+}
+.btn-secondary {
+  background: var(--card); /* Sets background color using the --card variable */
+  color: var(--text); /* Sets text color using the --text variable */
+  border: 1px solid var(--line); /* Adds a border using the --line variable */
+}
+.btn-secondary:hover {
+  background: color-mix(in oklab, var(--accent) 10%, var(--card)); /* Mixes accent color with card color on hover */
+}
+
+/* Tables */
+.table {
+  width: 100%; /* Makes table take up full width */
+  border-collapse: collapse; /* Collapses table borders */
+  background: var(--card); /* Sets background color using the --card variable */
+  border-radius: var(--radius); /* Sets border radius using the --radius variable */
+  overflow: hidden; /* Hides overflowing content */
+  border: 1px solid var(--line); /* Adds a border using the --line variable */
+  margin-top: 12px; /* Adds top margin */
+}
+.table th, .table td {
+  padding: 10px; /* Adds padding */
+  border-bottom: 1px solid var(--line); /* Adds a bottom border using the --line variable */
+  text-align: left; /* Aligns text to the left */
+  vertical-align: top; /* Aligns content to the top */
+}
+.table thead th {
+  background: var(--thead); /* Sets background color using the --thead variable */
+  font-weight: 600; /* Sets font weight to semi-bold */
+}
+.table tbody tr:hover {
+  background: color-mix(in oklab, var(--card), black 6%); /* Mixes card color with black on hover */
+}
+
+/* Utilities */
+.muted { color: var(--muted); } /* Sets text color using the --muted variable */
+.footer {
+  padding: 24px 16px; /* Adds vertical and horizontal padding */
+  color: var(--muted); /* Sets text color using the --muted variable */
+  text-align: center; /* Centers text */
+}
+
+/* --- Theme Switcher --- */
+.theme-toggle {
+  display: flex; /* Uses flexbox for layout */
+  gap: 8px; /* Sets gap between items */
+  align-items: center; /* Vertically aligns items */
+}
+.theme-toggle button {
+  background: var(--card); /* Sets background color using the --card variable */
+  border: 1px solid var(--line); /* Adds a border using the --line variable */
+  color: var(--text); /* Sets text color using the --text variable */
+  border-radius: 8px; /* Sets border radius */
+  padding: 6px 10px; /* Adds vertical and horizontal padding */
+  cursor: pointer; /* Changes cursor to pointer on hover */
+}
+.theme-toggle button.active {
+  outline: 2px solid var(--accent); /* Adds an outline on focus using the --accent variable */
+}
+
+
+.btn-success {
+  background: #1fb978; /* Sets background color */
+  color: #fff; /* Sets text color to white */
+  border: none; /* Removes border */
+}
+.btn-success:hover { background: #16a36a; } /* Sets background color on hover */
+
+.btn-danger {
+  background: #d43f3a; /* Sets background color */
+  color: #fff; /* Sets text color to white */
+  border: none; /* Removes border */
+}
+.btn-danger:hover { background: #b8322e; } /* Sets background color on hover */
+
+.badge.ok {
+  background: rgba(31,185,120,.15); /* Sets background color with transparency */
+  color: #1fb978; /* Sets text color */
+  border: 1px solid rgba(31,185,120,.4); /* Adds a border with transparency */
+}
+
+.badge.warn {
+  background: rgba(212,63,58,.15); /* Sets background color with transparency */
+  color: #d43f3a; /* Sets text color */
+  border: 1px solid rgba(212,63,58,.4); /* Adds a border with transparency */
+}

@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>ARO-Agent Results — {{QUERY}}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <h1>ARO-Agent Results</h1>
+    <div class="query">Query: <code id="q"></code></div>
+  </header>
+
+  <section class="controls">
+    <div class="filters">
+      <label>Year:
+        <input type="number" id="year-min" placeholder="from" style="width:6em" />
+        —
+        <input type="number" id="year-max" placeholder="to" style="width:6em" />
+      </label>
+      <label>Source:
+        <select id="source">
+          <option value="">(all)</option>
+          <option value="arxiv">arxiv</option>
+          <option value="crossref">crossref</option>
+          <option value="doaj">doaj</option>
+        </select>
+      </label>
+      <label>Venue:
+        <input id="venue" placeholder="contains…" />
+      </label>
+      <label><input type="checkbox" id="only-new" /> New since last run</label>
+      <button id="apply">Apply</button>
+      <button id="clear">Clear</button>
+    </div>
+    <div class="downloads">
+      <a id="dl-csv" href="results.csv">CSV</a>
+      <a id="dl-json" href="results.json">JSON</a>
+      <a id="dl-sqlite" href="results.sqlite">SQLite</a>
+      <a id="dl-bib" href="results.bib">BibTeX</a>
+      <a id="dl-diff" href="diff.csv" class="hidden">diff.csv</a>
+    </div>
+  </section>
+
+  <main>
+    <table id="tbl">
+      <thead>
+        <tr>
+          <th>Year</th>
+          <th>Title</th>
+          <th>Authors</th>
+          <th>Venue</th>
+          <th>Source</th>
+          <th>DOI / arXiv</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ARO Agent — Schedules</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+  <div class="topbar">
+    <div class="row">
+      <a class="btn btn-secondary" href="{{ url_for('index') }}">← Back</a>
+    </div>
+    <div class="row">
+      <div class="theme-toggle">
+        <button data-mode="auto" class="active">Auto</button>
+        <button data-mode="light">Light</button>
+        <button data-mode="dark">Dark</button>
+      </div>
+    </div>
+  </div>
+
+  <main class="container">
+    <section class="card">
+      {% if jobs %}
+      <div class="table-wrap">
+        <table class="table" role="grid" aria-label="Schedules">
+          <thead>
+            <tr>
+              <th style="width:44%">Job</th>
+              <th style="width:16%">Status</th>
+              <th style="width:18%">Next run</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for j in jobs %}
+            {% set runid =
+            (j.run_id if j is not mapping else j.get('run_id'))
+            or ((j.run.id) if (j is not mapping and j.run is defined and (j.run is not mapping)) else (j.run.get('id')
+            if (j.run is defined and j.run is mapping) else None))
+            or (j.latest_run_id if j is not mapping else j.get('latest_run_id'))
+            or (((j.get('run') or {}).get('id')) if j is mapping else None)
+            or (((j.get('last_run') or {}).get('id')) if j is mapping else (j.last_run.id if (j is not mapping and
+            j.last_run is defined) else None))
+            or None %}
+
+            {# normalized in app.py, with fallback to nested schedule #}
+            {% set is_on = (j.enabled if j is not mapping else j.get('enabled'))
+            or ((j.schedule.enabled) if j.schedule is defined else False)
+            or (((j.get('schedule') or {}).get('enabled')) if j is mapping else False) %}
+            {% set next_val = (j.next_run if j is not mapping else j.get('next_run'))
+            or ((j.schedule.next) if j.schedule is defined else None)
+            or (((j.get('schedule') or {}).get('next')) if j is mapping else None) %}
+
+            <tr>
+              <td>
+                <strong>{{ j.title or j.query }}</strong>
+                <div class="muted">Query: {{ j.query }}</div>
+              </td>
+
+              <td>
+                {% if is_on %}
+                <span class="badge ok">Enabled</span>
+                {% else %}
+                <span class="badge warn">Disabled</span>
+                {% endif %}
+              </td>
+
+              <td>{{ next_val or '—' }}</td>
+
+              <td class="row">
+                {% if runid %}
+                <form method="post"
+                  action="{% if is_on %}{{ url_for('run_schedule_disable', run_id=runid) }}{% else %}{{ url_for('run_schedule_enable', run_id=runid) }}{% endif %}">
+                  {% if is_on %}
+                  <button class="btn btn-danger" type="submit">Disable schedule</button>
+                  {% else %}
+                  <button class="btn btn-success" type="submit">Enable schedule</button>
+                  {% endif %}
+                </form>
+
+                <form method="post" action="{{ url_for('run_now', run_id=runid) }}">
+                  <button class="btn btn-secondary" type="submit">Run now</button>
+                </form>
+                {% else %}
+                <button class="btn btn-secondary" type="button" disabled title="No run linked to this job yet">Schedule
+                  N/A</button>
+                {% endif %}
+
+
+                {% if j.last_run_id %}
+                <a class="btn btn-secondary" href="{{ url_for('run_detail', run_id=j.last_run_id) }}">Last results</a>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <p class="muted">No schedules yet.</p>
+      {% endif %}
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      const html = document.documentElement;
+      const get = () => localStorage.getItem("aro-theme") || "auto";
+      const set = v => { localStorage.setItem("aro-theme", v); html.setAttribute("data-theme", v); mark(v); };
+      const mark = v => document.querySelectorAll(".theme-toggle button").forEach(b => b.classList.toggle("active", b.dataset.mode === v));
+      document.querySelectorAll(".theme-toggle button").forEach(b => b.onclick = () => set(b.dataset.mode));
+      set(get());
+    })();
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ARO Agent — Results</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+  <div class="topbar">
+    <div class="row">
+      <a class="btn btn-secondary" href="{{ url_for('index') }}">← Back</a>
+    </div>
+    <div class="row">
+      <div class="theme-toggle">
+        <button data-mode="auto" class="active">Auto</button>
+        <button data-mode="light">Light</button>
+        <button data-mode="dark">Dark</button>
+      </div>
+
+      {# Run-level schedule toggle with clear status and color #}
+      {% set is_on = (meta.get('scheduled')) or (meta.get('schedule', {}).get('enabled')) or run_scheduled %}
+
+      <form method="post"
+        action="{% if is_on %}{{ url_for('run_schedule_disable', run_id=run_id) }}{% else %}{{ url_for('run_schedule_enable', run_id=run_id) }}{% endif %}"
+        style="display:flex;align-items:center;gap:10px">
+
+        <span class="muted">Scheduling:</span>
+
+        {% if is_on %}
+        <span class="badge ok" title="This run is scheduled and updates automatically.">Enabled</span>
+        <button class="btn btn-danger" type="submit">Disable</button>
+        {% else %}
+        <span class="badge warn" title="This run is not scheduled.">Disabled</span>
+        <button class="btn btn-success" type="submit">Enable</button>
+        {% endif %}
+      </form>
+
+
+      {% if artifacts.csv %}<a class="btn btn-secondary" href="{{ artifacts.csv }}">CSV</a>{% endif %}
+      {% if artifacts.json %}<a class="btn btn-secondary" href="{{ artifacts.json }}">JSON</a>{% endif %}
+      {% if artifacts.bibtex %}<a class="btn btn-secondary" href="{{ artifacts.bibtex }}">BibTeX</a>{% endif %}
+      {% if artifacts.sqlite %}<a class="btn btn-secondary" href="{{ artifacts.sqlite }}">SQLite</a>{% endif %}
+    </div>
+  </div>
+
+  <main class="container">
+    <!-- Summary -->
+    <section class="card">
+      <h2 style="margin:0">{{ meta.get('query') or meta.get('title') or 'Run' }}</h2>
+      <div class="muted">
+        Run ID: {{ run_id }}
+        {% if meta.get('created_at') %} · {{ meta.get('created_at') }}{% endif %}
+        {% if meta.get('source_count') %} · Sources: {{ meta.get('source_count') }}{% endif %}
+      </div>
+    </section>
+
+    <!-- Email results (kept minimal; removed the extra sentence) -->
+    <section class="card">
+      <form method="post" action="{{ url_for('send_results') }}">
+        <input type="hidden" name="query" value="{{ meta.get('query') or '' }}">
+        <input type="hidden" name="csv" value="{{ raw_artifacts.csv or '' }}">
+        <input type="hidden" name="json" value="{{ raw_artifacts.json or '' }}">
+        <input type="hidden" name="sqlite" value="{{ raw_artifacts.sqlite or '' }}">
+        <input type="hidden" name="bibtex" value="{{ raw_artifacts.bibtex or '' }}">
+        <div class="row grid">
+          <div>
+            <label for="mail_to">Email results to</label>
+            <input id="mail_to" name="mail_to" type="email" placeholder="you@example.com">
+          </div>
+        </div>
+        <div class="row">
+          <button class="btn" type="submit">Send email</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Results table -->
+    <section class="card">
+      <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:0">
+        <strong>Results</strong>
+        <div class="muted">{{ preview|length if preview else 0 }} items</div>
+      </div>
+
+      <div class="table-wrap">
+        <table class="table" role="grid" aria-label="Results">
+          <thead>
+            <tr>
+              <th style="width:36%">Title</th>
+              <th style="width:22%">Authors</th>
+              <th style="width:12%">Source</th>
+              <th style="width:10%">Year</th>
+              <th>Links</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in preview %}
+            <tr>
+              <td>
+                <strong>{{ item.title }}</strong>
+                {% if item.abstract %}<div class="muted">{{ item.abstract[:140] }}{{ '…' if item.abstract|length>140
+                  else '' }}</div>{% endif %}
+              </td>
+              <td>{{ item.authors|join_authors }}</td>
+              <td>{{ (item.source or '')|upper }}</td>
+              <td>{{ item.year or item.published or '' }}</td>
+              <td>
+                {% if item.url %}<a href="{{ item.url }}" target="_blank" rel="noopener">Open</a>{% endif %}
+                {% if item.pdf_url %} · <a href="{{ item.pdf_url }}" target="_blank" rel="noopener">PDF</a>{% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      const html = document.documentElement;
+      const get = () => localStorage.getItem("aro-theme") || "auto";
+      const set = v => { localStorage.setItem("aro-theme", v); html.setAttribute("data-theme", v); mark(v); };
+      const mark = v => document.querySelectorAll(".theme-toggle button").forEach(b => b.classList.toggle("active", b.dataset.mode === v));
+      document.querySelectorAll(".theme-toggle button").forEach(b => b.onclick = () => set(b.dataset.mode));
+      set(get());
+    })();
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ARO-Agent Web</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+  <nav class="topbar">
+    <a href="{{ url_for('index') }}" class="brand">ARO-Agent</a>
+    <a href="{{ url_for('jobs') }}">Jobs & Schedules</a>
+  </nav>
+  <main class="container">
+    {% block content %}{% endblock %}
+  </main>
+  <footer class="footer">
+    <small>ARO-Agent · Outputs in <code>out/</code></small>
+  </footer>
+</body>
+
+</html>

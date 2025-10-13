@@ -1,0 +1,15 @@
+{
+  "build": { "builder": "NIXPACKS" },
+  "deploy": {
+    "startCommand": "uvicorn wsgi:asgi_app --host 0.0.0.0 --port $PORT --workers 1"
+  },
+  "env": {
+    "APP_MODULE": "webapp.app:APP",
+    "PYTHONPATH": ".",
+    "NIXPACKS_PYTHON_VERSION": "3.12",
+    "PYTHONUNBUFFERED": "1",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "ARO_API_BASE": "https://aroagentbackend-production.up.railway.app",
+    "ARO_SECRET_KEY": "change-me"
+  }
+}
