@@ -46,9 +46,17 @@ aro_agent_backend/
 │   ├── cli.py               # Command-line interface for local testing
 │   ├── config.py            # Configuration settings (paths, constants, etc.)
 │   ├── models.py            # Data models and schema definitions
-│   └── templates/assets/    # Static assets or templates for emails/reports
+│   ├── templates/assets/    # Static assets or templates for emails/reports
+│   │
+│   └── tests/               # ✅ Unit and integration tests
+│       ├── test_primary_id.py              # DOI and arXiv ID cleaning tests
+│       ├── test_api_schedule_toggle.py     # Schedule enable/disable tests
+│       ├── test_zip_endpoint.py            # ZIP packaging endpoint tests
+│       ├── test_send_email_mock.py         # Mock email sending tests
+│       ├── test_storage_integrity.py       # (Optional) File save/load tests
+│       └── __init__.py                     # Marks directory as a test package
 │
-└── requirements.txt         # Backend dependencies (Flask, requests, etc.)
+└── requirements.txt         # Backend dependencies (Flask, requests, pytest, etc.)
 ```
 
 ---
