@@ -1,63 +1,195 @@
-# ARO‑Agent (Academic Research Online Agent)
+# 🧠 ARO Agent — Backend API (`aro_agent_backend`)
 
-A lightweight, API‑first, multi‑agent Python tool that searches **arXiv**, **Crossref**, and **DOAJ**, normalises identifiers (preferring DOI with arXiv ID fallback), and exports **CSV + JSON + SQLite**, with a simple static **HTML results** page for filtering.
+## 📘 Overview
+The **ARO Agent Backend** is the core service responsible for managing automated research workflows, processing academic data, and providing REST API endpoints for frontend and external integrations.  
+It forms the **intelligence layer** of the *Academic Research Online Agent (ARO Agent)* system.
 
-This implementation follows the attached design proposal (BDI‑inspired, modular agents, API‑only strategy).
+This module performs:
+- Research discovery  
+- Data extraction and normalization  
+- Result storage and export  
+- Task scheduling and reporting  
 
-## 1) Quick start
-
-```bash
-python -m venv .venv
-# Windows: .venv\Scripts\activate
-# macOS/Linux:
-source .venv/bin/activate
-
-pip install -r requirements.txt
-```
-
-Run a query:
-
-```bash
-python -m aro_agent.cli --query "machine learning for fraud detection" --limit 50 --email you@example.com
-```
-
-Outputs are saved under `./out/run_YYYYmmdd_HHMMSS/`:
-- `results.csv`
-- `results.json`
-- `results.sqlite`
-- `index.html` (open in your browser for a filterable view)
-
-> **Note**: arXiv provides an Atom XML API; this repo parses it with the Python standard library. Crossref & DOAJ are JSON.
-
-## 2) Options
-
-- `--no-arxiv`, `--no-crossref`, `--no-doaj` to skip specific sources
-- `--limit N` max items per source (default 50)
-- `--email` sets the contact email used in the Crossref User‑Agent string
-- `--out PATH` sets the output root (default `out/`)
-
-## 3) Design and BDI mapping
-
-- **CoordinatorAgent** – executes intentions: orchestrates discovery → fetch → extract → store, deduplicates by DOI / arXiv ID.
-- **DiscoveryAgent** – translates the desire (free‑text query) into concrete API calls per source.
-- **FetchAgent** – reactive HTTP client with retry/backoff.
-- **ExtractAgent** – builds beliefs: normalised `Record` objects from source responses.
-- **StorageAgent** – persists beliefs to CSV/JSON/SQLite and emits a static HTML view.
-
-## 4) Reproducibility
-
-- Each run is time‑stamped.
-- JSON and CSV capture the full, normalised records.
-- SQLite provides a local, portable store.
-
-## 5) Next steps / extensions
-
-- Pagination across multiple pages per source
-- More filters (year range, open‑access, subject)
-- Weekly automation via OS scheduler (cron/Task Scheduler)
-- Unit tests for parsers & normalisers
-- Export to BibTeX / RIS
+It is built using **Python (Flask)** and follows a modular structure for scalability and cloud deployment.
 
 ---
 
-Made with ❤️ for transparent, reproducible academic search.
+## 🧩 Features
+
+- 🔍 **Automated Research Search:** Query academic data sources with filters (year range, keywords).  
+- 📦 **Multi-format Output:** Generates JSON, CSV, SQLite, and BibTeX.  
+- ⏰ **Task Scheduling:** Automate repeated searches via the frontend.  
+- ☁️ **Cloud Ready:** Fully deployable on **Railway.app** with minimal configuration.  
+- 🧠 **Modular Agents:** Each agent handles a specific function (fetching, extraction, storage, etc.).  
+- 🧾 **API + CLI Access:** Run via HTTP API or command line for flexibility.  
+
+---
+
+## 🏗️ Folder Structure
+
+```
+aro_agent_backend/
+│
+├── .env                     # Environment variables (optional)
+├── .gitignore               # Git ignore configuration
+│
+├── aro_agent/               # Main application package
+│   ├── agents/              # Submodules responsible for automation logic
+│   │   ├── coordinator.py   # Coordinates the entire research workflow
+│   │   ├── discovery.py     # Discovers relevant academic sources
+│   │   ├── extract.py       # Extracts structured data from results
+│   │   ├── fetch.py         # Retrieves data via APIs or online services
+│   │   ├── storage.py       # Saves results (CSV, JSON, SQLite, BibTeX)
+│   │   └── __init__.py      # Initializes the agent package
+│   │
+│   ├── api.py               # Flask API for handling search & scheduling requests
+│   ├── cli.py               # Command-line interface for local testing
+│   ├── config.py            # Configuration settings (paths, constants, etc.)
+│   ├── models.py            # Data models and schema definitions
+│   └── templates/assets/    # Static assets or templates for emails/reports
+│
+└── requirements.txt         # Backend dependencies (Flask, requests, etc.)
+```
+
+---
+
+## ⚙️ Installation & Setup (Local)
+
+### 1. Navigate to backend folder
+```bash
+cd aro_agent_backend
+```
+
+### 2. Create and activate virtual environment
+```bash
+python -m venv venv
+
+# Windows
+venv\Scripts\activate
+# macOS / Linux
+source venv/bin/activate
+```
+
+### 3. Install dependencies
+```bash
+pip install -r requirements.txt
+```
+
+> If requirements.txt is missing, install manually:
+```bash
+pip install flask requests sqlite-utils
+```
+
+### 4. Run the backend API
+```bash
+cd aro_agent
+python api.py
+```
+
+By default, the backend runs at:
+```
+http://127.0.0.1:5000/
+```
+
+---
+
+## ☁️ Deployment on Railway
+
+### 1. Upload `aro_agent_backend` folder
+Go to [https://railway.app](https://railway.app) and create a new Flask project.
+
+### 2. Add environment variables
+```
+FLASK_ENV=production
+PORT=5000
+```
+
+### 3. Start command (in Railway settings)
+```
+python aro_agent/api.py
+```
+
+Once deployed, your live API will be available at:
+```
+https://aroagentbackend-production.up.railway.app
+```
+
+---
+
+## 🧪 API Testing
+
+### Test via CURL
+```bash
+curl -X POST https://yourdomain.up.railway.app/runs   -H "Content-Type: application/json"   -d '{"query":"machine learning fraud","per_source_limit":10,"from_year":2019,"to_year":2025}'
+```
+
+### Example JSON Response
+```json
+{
+  "query": "machine learning fraud",
+  "results": [...],
+  "format": "json"
+}
+```
+
+---
+
+## 🧾 CLI Usage (Optional)
+
+Run directly from the terminal without the frontend:
+```bash
+cd aro_agent_backend/aro_agent
+python cli.py --query "artificial intelligence" --from_year 2020 --to_year 2025
+```
+
+Results are saved automatically in:
+```
+out/run_YYYYMMDD_HHMMSS/
+```
+
+Formats include:
+- `.csv`
+- `.json`
+- `.sqlite`
+- `.bib`
+- `index.html` (static summary)
+
+---
+
+## 🧠 Architecture Summary
+
+| Layer | Role |
+|-------|------|
+| **Coordinator** | Central controller managing workflow logic |
+| **Discovery** | Identifies relevant research sources |
+| **Fetch** | Retrieves and formats external data |
+| **Extract** | Processes raw data into structured output |
+| **Storage** | Persists outputs in multiple formats |
+| **API / CLI** | Provides user access for web or terminal execution |
+
+---
+
+## ✅ Evidence of Execution
+
+- Backend tested via local and Railway environments.  
+- Verified response JSON for multiple queries (2019–2025 range).  
+- Output stored under `/out/` directory in structured formats.  
+
+---
+
+## 👥 Author & Acknowledgments
+
+**Developer:** Abdullah Khalfan Alshibli  
+**Project:** Academic Research Online Agent (ARO Agent)  
+**Institution:** Essex University  
+**Unit:** Development Individual Project (Unit 11)  
+**Supervisor:** Dr Sabeen Tahir  
+
+---
+
+## 📚 References
+
+- Flask Framework — https://flask.palletsprojects.com/  
+- Python 3.12 Documentation — https://docs.python.org/3/  
+- Railway Deployment — https://docs.railway.app/  
+- SQLite — https://www.sqlite.org/
